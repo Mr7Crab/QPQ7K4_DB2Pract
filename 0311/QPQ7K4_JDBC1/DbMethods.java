@@ -18,7 +18,7 @@ public class DbMethods {
 		}
 
 	//Tábla létrehozása
-		String sql1="CREATE TABLE IF NOT EXIST Auto(" + 
+		String sql="CREATE TABLE IF NOT EXIST Auto(" + 
 						"Rendszam char PRIMARY KEY," + 
 						"Tipus char NOT NULL" +
 						"Szin char NOT NULL," +
@@ -26,29 +26,10 @@ public class DbMethods {
 						"Ar INTEGER NOR NULL," +
 						"Tulaj char NOT NULL" +
 						");";
-
-		String sql2="CREATE TABLE IF NOT EXIST Auto(" + 
-						"Rendszam char PRIMARY KEY," + 
-						"Tipus char NOT NULL" +
-						"Szin char NOT NULL," +
-						"Kor INTEGER NOT NULL," +
-						"Ar INTEGER NOR NULL," +
-						"Tulaj char NOT NULL" +
-						");";
-		String sql3="CREATE TABLE IF NOT EXIST Auto(" + 
-						"Rendszam char PRIMARY KEY," + 
-						"Tipus char NOT NULL" +
-						"Szin char NOT NULL," +
-						"Kor INTEGER NOT NULL," +
-						"Ar INTEGER NOR NULL," +
-						"Tulaj char NOT NULL" +
-						");";
-
-	
 		try (Connection conn = Connect();
 			Statement st = conn.createStatement()) {
 
-			st.execute(sql1);
+			st.execute(sql);
 		} catch(SQLException e){
 			System.out.println("Register hiba: "+ e.getMessage());
 		}

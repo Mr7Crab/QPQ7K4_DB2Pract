@@ -1,5 +1,7 @@
-package QPQ7K4;
 
+/*
+
+package QPQ7K4;
 import java.sql.*;
 import java.sql.ResoultSet;
 
@@ -86,3 +88,4 @@ public class DbMethods {
 	}
 }	
 // {}
+*/
