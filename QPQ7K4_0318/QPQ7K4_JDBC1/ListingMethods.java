@@ -27,7 +27,7 @@ public class ListingMethods {
         }
         DbMethods.DisConnect(conn);
     }    
-}
+
 
 public static void task_b(String table_name, String column){
     String sqlp = "SELECT SUM(" + qIdent(column) + ") AS sum, aVG(" + qIdent(column)+ ") AS avg FROM " + qIdent(table_name);
@@ -55,7 +55,118 @@ public static void task_b(String table_name, String column){
 // asscending=true -> ASC, false -> DESC
 public static void task_c(String table_name, String column, boolean ascending) {
     String sqlp = "SELECT * FROM " + qIdent(table_name)  + " ORDER BY " + qIdent(column) + (ascending ? " ASC" : " DESC");
+    Connection conn = DbMethods.Connect();
+    ResultSet result_set = execute(conn, sqlp);
 
+    if (result_set != null){
+        try {
+            ResultSetMetaData md = result_set.getMetaData();
+            int columnCount = md.getColumnCount();
+            //fejléc
+            String header = "";
+            for (int i = 1; i <= columnCount; i++) {
+                header += md.getColumnName(i) + "\t";
+            }
+            System.out.println(header);
+
+            while (result_set.next()) {
+                String row = "";
+                for (int i = 1; i <= columnCount; i++) {
+                    row += result_set.getString(i) + "\t";
+                }
+                System.out.println(row);
+            }
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    DbMethods.DisConnect(conn);
+}
+
+//task_d: 3 tábla JOIN + GROUP BY: hallgató--> projektek száma
+// Hallgato(ID, Vnev, Knev, SzulI, Lakcím)
+// Dolgozik(ID, Pkod)
+//Project(Pkodm Nev, Osszertek, Indul, Zarul)
+
+public static void task_d() {
+    String sqlp = "SELECT  h.Vnev, h.Knev, COUNT(d.Pkod) AS db " +
+                    "FROM Hallgato h " +
+                    "INNER JOIN Dolgozik d ON h.ID = d.ID " +
+                    "INNER JOIN Projekt p ON d.Pkod = p.Pkod " +
+                    "GROUP BY h.Vnev, h.Knev" +
+                    " ORDER BY db DESC, h.Vnev, h.Knev ASC";
+    //Hozzákapcsolja a "Dolgozik" táblát, ahol a hallgató azonosítója (ID) megeggyezik.
+    // Hallgatók tábla vezeték és keresztneve alapján végezzük a csoportosítást 
+
+    Connection conn = DbMethods.Connect();
+    ResultSet result_set = execute(conn, sqlp);
+
+    if (result_set != null) {
+        try {
+            while (result_set.next()) {
+                String vnev = result_set.getString("Vnev");
+                String knev = result_set.getString("Knev");
+                int count = result_set.getInt("db");
+                System.out.println("Név: "+vnev + " " + knev + "\t Projektek száma: " + count);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    DbMethods.DisConnect(conn);
 }
 
 
+// Tábla teljes listázása fejléc + sorok
+public static void listTable(String table_name){
+    System.out.println("\n"+table_name);
+    String sqlp = "SELECT * FROM " + qIdent(table_name);
+    Connection conn = DbMethods.Connect();
+    ResultSet result_set = execute(conn, sqlp);
+
+    if (result_set != null){
+        try {
+            ResultSetMetaData md = result_set.getMetaData();
+            int columnCount = md.getColumnCount();
+            
+            String header = "";
+            for (int i = 1; i <= columnCount; i++) {
+                header += md.getColumnName(i) + "\t";
+            }
+            System.out.println(header);
+
+            while (result_set.next()) {
+                String row = "";
+                for (int i = 1; i <= columnCount; i++) {
+                    row += result_set.getString(i) + "\t";
+                }
+                System.out.println(row);
+            }
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    DbMethods.DisConnect(conn);
+}
+
+// Segédfüggvények
+
+private static ResultSet execute(Connection conn, String sqlp){
+    ResultSet result_set= null;
+    try {
+        Statement statement = conn.createStatement();
+        result_set = statement.executeQuery(sqlp);
+    } catch ( SQLException e) {
+        System.out.println("SQL hiva: " +e.getMessage());
+    }
+    return result_set;
+}
+
+    // biztonságos azonosító (Táblanév / oszlopbév) allenőrzés és idézőjel használata SQLite-ban
+    private static String qIdent(String ident){
+        if (ident == null || !ident.matches("[A-Za-z_][A-Za-z0-9_]*")) {
+            throw new IllegalArgumentException("Érvénytelen azonosító: " + ident);
+        }
+        return "\"" + ident + "\"";
+    }
+}
