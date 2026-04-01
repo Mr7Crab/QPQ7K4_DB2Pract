@@ -1,0 +1,14 @@
+SET SERVEROUTPUT ON;
+
+DECLARE
+    jegy NUMBER := 4;
+BEGIN
+    CASE jegy
+        WHEN 5 THEN DBMS_OUTPUT.PUT_LINE('Jeles');
+        WHEN 4 THEN DBMS_OUTPUT.PUT_LINE('Jó');
+        WHEN 3 THEN DBMS_OUTPUT.PUT_LINE('Közepes');
+        WHEN 2 THEN DBMS_OUTPUT.PUT_LINE('Elégséges');
+        ELSE DBMS_OUTPUT.PUT_LINE('Elégtelen');
+    END CASE;
+END;
+/
