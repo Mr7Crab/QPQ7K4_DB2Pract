@@ -1,3 +1,4 @@
+```sql
 CREATE TABLE Circles(
     Radius number(4) PRIMARY KEY,
     Circumference number,
@@ -122,3 +123,4 @@ BEGIN
     ErtekNovel(10);
 END;
 SELECT * FROM Zoo;
+```
