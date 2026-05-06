@@ -1,0 +1,7 @@
+SET SERVEROUTPUT ON;
+
+BEGIN
+    ModT('t05', 70);
+END;
+/
+
